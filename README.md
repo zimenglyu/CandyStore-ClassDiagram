@@ -1,7 +1,12 @@
 # CandyStore-ClassDiagram
 
+<div align="center">
+
 ![Keanu's Candy Store](assets/keanu_candy.png)
+
 *Store image created by Kean University student Christopher Paredes*
+
+</div>
 
 This code sample was created for a Software Engineering course to demonstrate class diagrams, using Keanu's Candy Store at Kean University as the case study.
 
@@ -17,4 +22,4 @@ This repository is intended for educational purposes as part of Kean University'
 
 ## License
 
-This project is for educational use only. All rights reserved to the respective creators and Kean University.
+This project is for educational use only. All rights reserved.
