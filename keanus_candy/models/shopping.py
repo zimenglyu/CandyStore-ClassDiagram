@@ -22,29 +22,33 @@ class ShoppingCart:
     
     def __init__(self, user: User):
         self.user = user
-        self.items: List[CartItem] = []
+        self._items: List[CartItem] = []  # Protected: internal state
 
     def add_item(self, candy: Candy, quantity: int):
         """Add candy to the shopping cart."""
-        for item in self.items:
+        for item in self._items:
             if item.candy == candy:
                 item.quantity += quantity
                 return
-        self.items.append(CartItem(candy, quantity))
+        self._items.append(CartItem(candy, quantity))
 
     def calculate_total(self):
         """Calculate the total amount in the cart."""
-        return sum(item.subtotal() for item in self.items)
+        return sum(item.subtotal() for item in self._items)
 
     def create_order(self, payment_method: str) -> "Order":
         """Create an order from the current cart contents."""
         total = self.calculate_total()
-        order_items = [OrderItem(i.candy, i.quantity) for i in self.items]
+        order_items = [OrderItem(i.candy, i.quantity) for i in self._items]
         return Order(self.user, order_items, total, payment_method)
 
     def clear(self):
         """Clear all items from the cart."""
-        self.items.clear()
+        self._items.clear()
+
+    def get_items(self) -> List[CartItem]:
+        """Get a copy of the cart items."""
+        return self._items.copy()
 
 
 class Order:

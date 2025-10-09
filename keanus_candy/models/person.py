@@ -18,29 +18,37 @@ class User(Person):
     
     def __init__(self, user_id: int, name: str, email: str, password: str):
         super().__init__(user_id, name, email)
-        self.password = password
-        self.orders: List["Order"] = []
-        self.cart: Optional["ShoppingCart"] = None
+        self._password = password  # Protected: sensitive data
+        self._orders: List["Order"] = []  # Protected: internal state
+        self._cart: Optional["ShoppingCart"] = None  # Protected: internal state
 
     def login(self, email: str, password: str) -> bool:
         """Authenticate the user."""
-        return self.email == email and self.password == password
+        return self.email == email and self._password == password
 
     def add_to_cart(self, candy: "Candy", quantity: int):
         """Add candy to shopping cart."""
-        if not self.cart:
+        if not self._cart:
             from .shopping import ShoppingCart
-            self.cart = ShoppingCart(self)
-        self.cart.add_item(candy, quantity)
+            self._cart = ShoppingCart(self)
+        self._cart.add_item(candy, quantity)
 
     def checkout(self, payment_method: str):
         """Convert shopping cart into an order."""
-        if not self.cart:
+        if not self._cart:
             raise ValueError("Cart is empty")
-        order = self.cart.create_order(payment_method)
-        self.orders.append(order)
-        self.cart.clear()
+        order = self._cart.create_order(payment_method)
+        self._orders.append(order)
+        self._cart.clear()
         return order
+
+    def get_orders(self) -> List["Order"]:
+        """Get a copy of the user's orders."""
+        return self._orders.copy()
+
+    def get_cart(self) -> Optional["ShoppingCart"]:
+        """Get the user's shopping cart."""
+        return self._cart
 
 
 class Staff(User):

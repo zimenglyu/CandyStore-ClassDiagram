@@ -34,9 +34,10 @@ def main():
     
     # Display cart contents
     print("Shopping Cart Contents:")
-    for item in user.cart.items:
+    cart = user.get_cart()
+    for item in cart.get_items():
         print(f"  {item.candy.name} x{item.quantity} = ${item.subtotal():.2f}")
-    print(f"Total: ${user.cart.calculate_total():.2f}")
+    print(f"Total: ${cart.calculate_total():.2f}")
     
     # Checkout with credit card
     credit_card = CreditCard("1234567890123456", "John Doe")
