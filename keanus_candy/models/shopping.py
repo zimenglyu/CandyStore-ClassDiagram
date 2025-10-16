@@ -3,6 +3,7 @@ from typing import List
 
 from .person import User
 from .product import Candy
+from .payment import PaymentMethod
 
 
 class CartItem:
@@ -36,7 +37,7 @@ class ShoppingCart:
         """Calculate the total amount in the cart."""
         return sum(item.subtotal() for item in self._items)
 
-    def create_order(self, payment_method: str) -> "Order":
+    def create_order(self, payment_method: PaymentMethod) -> "Order":
         """Create an order from the current cart contents."""
         total = self.calculate_total()
         order_items = [OrderItem(i.candy, i.quantity) for i in self._items]
@@ -56,7 +57,7 @@ class Order:
     
     order_counter = 1000
 
-    def __init__(self, user: User, items: List["OrderItem"], total_amount: float, payment_method: str):
+    def __init__(self, user: User, items: List["OrderItem"], total_amount: float, payment_method: PaymentMethod):
         self.order_id = Order.order_counter
         Order.order_counter += 1
         self.user = user
@@ -67,8 +68,13 @@ class Order:
         self.timestamp = datetime.now()
 
     def confirm_payment(self):
-        """Mark the order as paid."""
-        self.status = "Paid"
+        """Process payment and mark the order as paid."""
+        if self.payment_method.process_payment(self.total_amount):
+            self.status = "Paid"
+            return True
+        else:
+            self.status = "Payment Failed"
+            return False
 
     def ship_order(self):
         """Mark the order as shipped."""

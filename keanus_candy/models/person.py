@@ -33,7 +33,7 @@ class User(Person):
             self._cart = ShoppingCart(self)
         self._cart.add_item(candy, quantity)
 
-    def checkout(self, payment_method: str):
+    def checkout(self, payment_method: "PaymentMethod"):
         """Convert shopping cart into an order."""
         if not self._cart:
             raise ValueError("Cart is empty")
